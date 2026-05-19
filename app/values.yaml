@@ -1,0 +1,23 @@
+environment: "dev"
+service:
+  namespace: "httpbin-dev"
+  version: "dev9"  
+  name: "httpbin"
+  port: "8080"
+  replicas: 1
+
+image:
+  repository: ghcr.io/plexusissolaris/httpbin
+
+resources: 
+ limits:
+   cpu: 500m
+   memory: 2Gi
+ requests: 
+   cpu: 50m
+   memory: 500Mi
+
+secrets:
+  HTTPBIN_SECRET_KEY: httpbin-secret-key
+  
+env:

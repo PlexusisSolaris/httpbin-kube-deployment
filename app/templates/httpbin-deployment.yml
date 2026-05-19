@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}
+  namespace: {{ .Values.service.namespace }}
+spec:
+  selector:
+    matchLabels:
+      run: {{ .Values.service.name }}
+  replicas: {{ .Values.service.replicas }}
+  template:
+    metadata:
+      labels:
+        run: {{ .Values.service.name }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: {{ .Values.service.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.service.version }}"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ["ALL"]
+          {{- if .Values.resources }}
+          resources: 
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ int .Values.service.port }}
+              protocol: TCP
+          env:
+{{- range $key, $value := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef: 
+                  name: {{ $value }}
+                  key: {{ $value }}
+{{- end }}
+{{- range $key, $value := .Values.env }}  
+            - name: {{ $key }}
+              value: "{{ $value }}"
+{{- end }}
