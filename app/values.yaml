@@ -16,9 +16,6 @@ hpa:
 networkPolicy:
   enabled: true
 
-image:
-  repository: ghcr.io/plexusissolaris/httpbin
-
 resources:
   limits:
     cpu: 500m
