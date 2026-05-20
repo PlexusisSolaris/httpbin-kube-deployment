@@ -1,0 +1,36 @@
+---
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+        description: 'The tag of the image to deploy'
+        type: string
+
+jobs:
+  commit-new-tag:
+    name: Commit new tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: true
+
+      - name: Get version of the image to deploy
+        run: |
+          echo $TAG
+          sed -i '/^$/s// #BLANK_LINE/' app/values.yaml
+          yq -i ".service.version = \"${TAG}\"" app/values.yaml
+          sed -i "s/ *#BLANK_LINE//g" app/values.yaml
+          git config user.email "bot@httpbin.com"
+          git config user.name "Deployment Bot"
+          git add app/values.yaml
+          git commit -m "ops: deploy with tag: $TAG"
+          git push origin HEAD:main
+        env:
+          TAG: ${{ inputs.tag }}
