@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: true
+          repository: PlexusisSolaris/httpbin-kube-deployment
 
       - name: Get version of the image to deploy
         run: |
