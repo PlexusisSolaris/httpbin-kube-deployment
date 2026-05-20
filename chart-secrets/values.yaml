@@ -1,0 +1,4 @@
+# namespace: example-namespace
+
+# secrets:
+#   secretName: "example-secret"

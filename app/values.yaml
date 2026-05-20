@@ -1,0 +1,39 @@
+environment: "dev"
+service:
+  namespace: "httpbin-dev"
+  version: "dev9"  
+  name: "httpbin"
+  port: "8080"
+  minReplicas: 2
+  maxReplicas: 5
+  userID: 1000
+  groupID: 1000
+
+hpa:
+  enabled: true
+  cpuUtilizationPercentage: 70
+
+networkPolicy:
+  enabled: true
+
+image:
+  repository: ghcr.io/plexusissolaris/httpbin
+
+resources: 
+ limits:
+   cpu: 500m
+   memory: 2Gi
+ requests: 
+   cpu: 50m
+   memory: 500Mi
+
+configMap:
+  enabled: true
+  name: httpbin-config
+  data:
+    HTTPBIN_TRACKING_CODE: "development"
+
+secrets:
+  HTTPBIN_SECRET_KEY: httpbin-secret-key
+  
+env:
