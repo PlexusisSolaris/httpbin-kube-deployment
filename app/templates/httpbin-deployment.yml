@@ -16,6 +16,9 @@ spec:
       labels:
         run: {{ .Values.service.name }}
     spec:
+      volumes:
+        - name: tmp-dir
+          emptyDir: {}
       securityContext:
         runAsNonRoot: true
         runAsUser: {{ .Values.service.userID }}
@@ -23,7 +26,10 @@ spec:
         fsGroup: {{ .Values.service.groupID }}
       containers:
         - name: {{ .Values.service.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.service.version }}"
+          volumeMounts:
+            - name: tmp-dir
+              mountPath: /tmp
+          image: {{ .Values.service.version }}
           {{- if .Values.configMap.enabled }}
           envFrom:
             - configMapRef:
@@ -34,7 +40,7 @@ spec:
             runAsUser: {{ .Values.service.userID }}
             runAsGroup: {{ .Values.service.groupID }}
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
           {{- if .Values.resources }}
