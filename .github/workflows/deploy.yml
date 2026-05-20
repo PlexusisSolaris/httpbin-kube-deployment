@@ -27,7 +27,7 @@ jobs:
           repository: PlexusisSolaris/httpbin-kube-deployment
           token: ${{ secrets.DEPLOY_PAT }}
 
-      - name: Get version of the image to deploy
+      - name: Update values.yaml with new tag and commit
         run: |
           echo $TAG
           sed -i '/^$/s// #BLANK_LINE/' app/values.yaml
