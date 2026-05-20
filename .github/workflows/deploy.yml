@@ -8,6 +8,10 @@ on:
         required: true
         description: 'The tag of the image to deploy'
         type: string
+    secrets:
+      DEPLOY_PAT:
+        required: true
+        description: 'Personal Access Token with repo permissions for deployment'
 
 jobs:
   commit-new-tag:
@@ -21,6 +25,7 @@ jobs:
         with:
           persist-credentials: true
           repository: PlexusisSolaris/httpbin-kube-deployment
+          token: ${{ secrets.DEPLOY_PAT }}
 
       - name: Get version of the image to deploy
         run: |
