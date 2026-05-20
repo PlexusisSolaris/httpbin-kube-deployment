@@ -1,7 +1,7 @@
 environment: "dev"
 service:
   namespace: "httpbin-dev"
-  version: "ghcr.io/plexusissolaris/httpbin:dev10"
+  version: "ghcr.io/plexusissolaris/httpbin:dev11"
   name: "httpbin"
   port: "8080"
   minReplicas: 2
