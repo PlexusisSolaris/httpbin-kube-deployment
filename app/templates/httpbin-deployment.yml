@@ -8,7 +8,9 @@ spec:
   selector:
     matchLabels:
       run: {{ .Values.service.name }}
+  {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.service.replicas }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -16,16 +18,21 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.service.userID }}
+        runAsGroup: {{ .Values.service.groupID }}
+        fsGroup: {{ .Values.service.groupID }}
       containers:
         - name: {{ .Values.service.name }}
           image: "{{ .Values.image.repository }}:{{ .Values.service.version }}"
+          {{- if .Values.configMap.enabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMap.name }}-cm
+          {{- end }}
           securityContext:
             runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
+            runAsUser: {{ .Values.service.userID }}
+            runAsGroup: {{ .Values.service.groupID }}
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: false
             capabilities:

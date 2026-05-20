@@ -1,0 +1,17 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.service.name }}-np
+  namespace: {{ .Values.service.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      run: {{ .Values.service.name }}
+  policyTypes:
+    - Ingress
+  ingress:
+  - ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+{{- end }}
